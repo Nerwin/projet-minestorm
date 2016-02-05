@@ -9,12 +9,12 @@ QString Game::endGame(bool isWinning)
 {
     if (!isWinning) {
         qDebug() << "PERDU";
-        texte = "GAME OVER";
-        return texte;
+        texteEndGame = "GAME OVER";
+        return texteEndGame;
     } else {
         qDebug() << "GAGNE";
-        texte = "YOU WIN";
-        return texte;
+        texteEndGame = "YOU WIN";
+        return texteEndGame;
     }
 }
 const QSize &Game::size() const {
@@ -44,10 +44,6 @@ void Game::update() {
     }
 }
 
-void Game::mustEclose()
-{
-    _isEclosion = true;
-}
 void Game::setSpeed( int speed ) {
     if( speed >=1 && speed <= 100) {
         _speed = speed;

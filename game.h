@@ -118,7 +118,7 @@ private:
     int _speed;
     QSize _size;
     double _score = 15;
-    QString texte;
+    QString texteEndGame;
 
 
 protected:
@@ -136,8 +136,6 @@ signals:
 
 private slots:
     void update();
-public slots:
-    void mustEclose();
 };
 
 #endif // GAME_H

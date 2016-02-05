@@ -1,21 +1,19 @@
 #include "mine.h"
 
-Mine::Mine(QPoint point, double size)
-    : QObject(nullptr)
-{
+Mine::Mine(QPoint point, double size) : QObject(nullptr){
     this->setPoint(point);
     this->setSize(size);
-    this->_timer = QSharedPointer<QTimer>(new QTimer());
-
-    this->_timer->setSingleShot(true);
-    connect(_timer.data(), SIGNAL(timeout()), this, SLOT(eclosion()));
-    _timer->start(5);
-
     directionLine.setPoints(_point, _point);
     createCollisionBox();
     angle = -7 + (rand() %(int)(7 - (-7) +1 ));
     pixmap.load(path);
     pixmap = pixmap.scaled(QSize(size,size),Qt::AspectRatioMode::KeepAspectRatio);
+
+    //QTimer
+    this->_timer = QSharedPointer<QTimer>(new QTimer());
+    this->_timer->setSingleShot(true);
+    connect(_timer.data(), SIGNAL(timeout()), this, SLOT(eclosion()));
+    _timer->start(5000);
 }
 
 void Mine::createCollisionBox(){
@@ -24,10 +22,6 @@ void Mine::createCollisionBox(){
 }
 
 void Mine::draw(QPainter &painter){
-    //Mine
-    painter.setPen(Qt::GlobalColor::white);
-    QBrush brush(Qt::GlobalColor::white,Qt::SolidPattern);
-    painter.setBrush(brush);
     painter.drawPixmap(_point.x()-(pixmap.width()/2),_point.y()-(pixmap.height()/2),pixmap);
 }
 
@@ -62,17 +56,11 @@ void Mine::updatePositionBox(){
     _box.setPolygon(polygon);
 }
 
-void Mine::updateMinePosition(){
-    updatePositionBox();
-}
-
 bool Mine::checkCollision(QPoint bulletPoint){
     return _box.getPolygon().containsPoint(bulletPoint, Qt::OddEvenFill);
 }
 
 void Mine::eclosion(){
-    qDebug() << "Mine::Explosion()";
-
     _newPoint.setX(this->point().x() + 3 * cos(angle));
     _newPoint.setY(this->point().y() + 3 * sin(angle));
     directionLine.setPoints(point(),_newPoint);

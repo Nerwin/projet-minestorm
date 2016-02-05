@@ -11,13 +11,15 @@ class Explosion
 {
 public:
     Explosion(QPoint point);
-
     void draw(QPainter &painter);
-
 private:
-
+    QPen pen;
+    int compteur = 0;
     QPoint _point;
-    int angle;
+    QLine line;
+    int randValue = 0;
+    int angle = 0;
+    QList<QLine> explo;
 };
 
 #endif // EXPLOSION_H
