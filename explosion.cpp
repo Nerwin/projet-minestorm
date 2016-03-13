@@ -8,7 +8,6 @@ Explosion::Explosion(QPoint point){
     for (int i = 0; i <= 15; ++i) {
         angle = -7 + (rand() %(int)(7 - (-7) +1 ));
         randValue = (rand() %(int)(1 - (-5) +1 ));
-        qDebug() << randValue;
         line.setPoints(_point,QPoint(_point.x() + randValue * cos(angle),_point.y() + randValue * sin(angle)));
         explo.append(line);
     }

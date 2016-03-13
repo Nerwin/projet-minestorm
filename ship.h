@@ -63,8 +63,9 @@ private slots:
     void immunity();
 private:
     bool immune = false;
+    int compteurTimer = 0;
     int nbShot = 0;
-    int life = 3;
+    int life = 4;
     float radiant = 0;
     float angle = 20;
     int size = 30;
@@ -80,7 +81,7 @@ private:
     QSharedPointer<QTimer> _timerRespawn; // QTimer pour l'invulnérabilité après une collision
     QList<QSharedPointer<Mine>> mines_to_be_deleted; // QList de mine à delete après une collision
     QPixmap pixmap; // Déclaration pixmap du vaisseau
-    QString path = "/home/epsi/minestorm/Assets/ship.png"; // Path pour l'image du vaisseau
+    QString path = ":/Assets/Assets/ship.png"; // Path pour l'image du vaisseau
     QLine shipLine; // Line pour le vaisseau
     Box _box; // Box du vaisseau
     vector<Bullet> shipFire; // Tirs du vaisseau

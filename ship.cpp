@@ -7,13 +7,13 @@ Ship::Ship() : QObject(nullptr){
     createCollisionBox();
 }
 void Ship::acceleration(){
-     if (currentSpeed  < 20)
-         currentSpeed += 1;
-     lastEcart_dx = shipLine.dx();
-     lastEcart_dy = shipLine.dy();
+    if (currentSpeed  < 20)
+        currentSpeed += 1;
+    lastEcart_dx = shipLine.dx();
+    lastEcart_dy = shipLine.dy();
 }
 void Ship::hited(){
-    if(!immune && life > 1){
+    if(!immune && life >= 1){
         life--;
         respawn();
     }
@@ -23,9 +23,9 @@ void Ship::respawn(){
         immune = true;
         qDebug() << "Création QTimer de réapparition";
         this->_timerRespawn = QSharedPointer<QTimer>(new QTimer());
-        this->_timerRespawn->setSingleShot(true);
+        this->_timerRespawn->setSingleShot(false);
         connect(_timerRespawn.data(), SIGNAL(timeout()), this, SLOT(immunity()));
-        _timerRespawn->start(3000);
+        _timerRespawn->start(1000);
     }
     shipLine.setLine(400, 400, 400, 387);
     updatePositionBox();
@@ -97,8 +97,14 @@ void Ship::shotSignal(){
     _timer.clear();
 }
 void Ship::immunity(){
-    qDebug() << "Immunity ended";
-    immune = false;
+    compteurTimer++;
+    qDebug() << "Invincible : " << immune;
+    if (compteurTimer >= 3 || life <= 1) {
+        immune = false;
+        _timerRespawn.clear();
+        compteurTimer = 0;
+        qDebug() << "invincible : "<< immune;
+    }
 }
 bool Ship::getImmune() const
 {
@@ -115,6 +121,10 @@ bool Ship::checkCollision(QPolygon poly){
     return polygonCollision.isEmpty();
 }
 void Ship::draw(QPainter &painter){
+    if (immune) {
+        painter.setPen(Qt::GlobalColor::red);
+        painter.drawEllipse(shipLine.p1(),20,20);
+    }
     painter.drawPixmap(shipLine.x1()-(pixmap.width()/2),shipLine.y1()-(pixmap.height()/2),pixmap);
     painter.drawLine(shipLine);
 }
@@ -146,6 +156,7 @@ void Ship::drawBullet(QPainter &painter, QSize size, vector<QSharedPointer<Mine>
         }
         while(!mines_to_be_deleted.empty() ) {
             std::remove(begin(_mines),end(_mines),mines_to_be_deleted.front());
+            _mines.pop_back();
             mines_to_be_deleted.pop_front();
         }
         if (!bulletErased){

@@ -18,7 +18,7 @@ class Mine : public QObject
 {
     Q_OBJECT
 public:
-    Mine(QPoint point, double size);
+    Mine(QPoint point, double size, int timerLenght);
     QPoint point() const;
     void setPoint(const QPoint &point);
     Box box() const;
@@ -35,6 +35,15 @@ public:
     void move(QSize size);
     void updatePositionBox();
     bool checkCollision(QPoint bulletPoint);
+    double getCompteur() const;
+    void setCompteur(double value);
+
+    bool getIsEclosion() const;
+    void setIsEclosion(bool value);
+
+    QSharedPointer<QTimer> timer() const;
+    void setTimer(const QSharedPointer<QTimer> &timer);
+
 private slots:
     void eclosion();
 private:
@@ -47,9 +56,11 @@ private:
     QPoint _point;
     QPoint _newPoint;
     QLine directionLine;
-    QString path = "/home/epsi/minestorm/Assets/point-minestorm.png";
+    QString path = ":/Assets/Assets/point-minestorm.png";
     QString pathEvolved = "/home/epsi/minestorm/Assets/evolution.png";
     QPixmap pixmap;
+    double compteur;
+    bool isEclosion = false;
 };
 
 #endif // MINE_H

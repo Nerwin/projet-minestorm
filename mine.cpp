@@ -1,8 +1,9 @@
 #include "mine.h"
 
-Mine::Mine(QPoint point, double size) : QObject(nullptr){
+Mine::Mine(QPoint point, double size, int timerLenght) : QObject(nullptr){
     this->setPoint(point);
     this->setSize(size);
+    compteur = timerLenght/1000;
     directionLine.setPoints(_point, _point);
     createCollisionBox();
     angle = -7 + (rand() %(int)(7 - (-7) +1 ));
@@ -11,15 +12,45 @@ Mine::Mine(QPoint point, double size) : QObject(nullptr){
 
     //QTimer
     this->_timer = QSharedPointer<QTimer>(new QTimer());
-    this->_timer->setSingleShot(true);
+    this->_timer->setSingleShot(false);
     connect(_timer.data(), SIGNAL(timeout()), this, SLOT(eclosion()));
-    _timer->start(5000);
+    _timer->start(timerLenght);
 }
 
 void Mine::createCollisionBox(){
     QRect rect(QPoint(_point.x() - (_size),_point.y() - (_size)),QPoint(_point.x() + (_size),_point.y() + (_size)));
     _box = Box(rect);
 }
+QSharedPointer<QTimer> Mine::timer() const
+{
+    return _timer;
+}
+
+void Mine::setTimer(const QSharedPointer<QTimer> &timer)
+{
+    _timer = timer;
+}
+
+bool Mine::getIsEclosion() const
+{
+    return isEclosion;
+}
+
+void Mine::setIsEclosion(bool value)
+{
+    isEclosion = value;
+}
+
+double Mine::getCompteur() const
+{
+    return compteur;
+}
+
+void Mine::setCompteur(double value)
+{
+    compteur = value;
+}
+
 
 void Mine::draw(QPainter &painter){
     painter.drawPixmap(_point.x()-(pixmap.width()/2),_point.y()-(pixmap.height()/2),pixmap);
@@ -36,7 +67,7 @@ void Mine::move(QSize size){
     }
     else if (_point.x() < 0) {
         _point = QPoint(_point.x() + size.width(), _point.y());
-       directionLine = QLine(QPoint(directionLine.x1() + size.width(), directionLine.y1()),QPoint(directionLine.x2() + size.width(), directionLine.y2()));
+        directionLine = QLine(QPoint(directionLine.x1() + size.width(), directionLine.y1()),QPoint(directionLine.x2() + size.width(), directionLine.y2()));
     }
     else if (_point.y() > size.height()) {
         _point = QPoint(_point.x(), _point.y() - size.height());
@@ -61,9 +92,14 @@ bool Mine::checkCollision(QPoint bulletPoint){
 }
 
 void Mine::eclosion(){
-    _newPoint.setX(this->point().x() + 3 * cos(angle));
-    _newPoint.setY(this->point().y() + 3 * sin(angle));
-    directionLine.setPoints(point(),_newPoint);
+    compteur--;
+    if (compteur == 0) {
+        _newPoint.setX(this->point().x() + 3 * cos(angle));
+        _newPoint.setY(this->point().y() + 3 * sin(angle));
+        directionLine.setPoints(point(),_newPoint);
+        _timer.clear();
+        isEclosion = true;
+    }
 }
 QPixmap Mine::getPixmap() const{
     return pixmap;

@@ -39,7 +39,7 @@ public:
 private:
     virtual void step() override ;
     void initialize() override;
-    void addMines(QPoint point, double size);
+    void addMines(QPoint point, double size, int timerLenght);
     void goDown();
     void initMine();
     vector<QSharedPointer<Mine>> _mines;

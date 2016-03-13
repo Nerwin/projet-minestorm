@@ -37,3 +37,6 @@ HEADERS  += mainwindow.h \
     threadbullet.h
 
 FORMS    +=
+
+RESOURCES += \
+    ressources.qrc
